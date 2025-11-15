@@ -1,0 +1,40 @@
+{
+  "mcpServers": {
+    "fetch": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-fetch"
+      ],
+      "env": {},
+      "disabled": true,
+      "autoApprove": []
+    },
+    "apple-docs": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@kimsungwhee/apple-docs-mcp"
+      ],
+      "autoApprove": [
+        "mcp_apple_docs_search_apple_docs",
+        "mcp_apple_docs_get_apple_doc_content",
+        "mcp_apple_docs_list_technologies",
+        "mcp_apple_docs_search_framework_symbols",
+        "mcp_apple_docs_get_related_apis",
+        "mcp_apple_docs_resolve_references_batch",
+        "mcp_apple_docs_get_platform_compatibility",
+        "mcp_apple_docs_find_similar_apis",
+        "mcp_apple_docs_get_documentation_updates",
+        "mcp_apple_docs_get_technology_overviews",
+        "mcp_apple_docs_get_sample_code",
+        "mcp_apple_docs_list_wwdc_videos",
+        "mcp_apple_docs_search_wwdc_content",
+        "mcp_apple_docs_get_wwdc_video",
+        "mcp_apple_docs_get_wwdc_code_examples",
+        "mcp_apple_docs_browse_wwdc_topics",
+        "mcp_apple_docs_find_related_wwdc_videos",
+        "mcp_apple_docs_list_wwdc_years"
+      ]
+    }
+  }
+}

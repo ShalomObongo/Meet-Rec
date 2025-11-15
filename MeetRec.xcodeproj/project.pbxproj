@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		8FD7F3E82EC8F68400CFF5B0 /* ABOUT.md in Resources */ = {isa = PBXBuildFile; fileRef = 8FD7F3E72EC8F68400CFF5B0 /* ABOUT.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		8FD7F3CB2EC8F66500CFF5B0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +31,7 @@
 		8FD7F3B82EC8F66300CFF5B0 /* MeetRec.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MeetRec.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FD7F3CA2EC8F66500CFF5B0 /* MeetRecTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MeetRecTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FD7F3D42EC8F66500CFF5B0 /* MeetRecUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MeetRecUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8FD7F3E72EC8F68400CFF5B0 /* ABOUT.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ABOUT.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -79,6 +84,7 @@
 				8FD7F3CD2EC8F66500CFF5B0 /* MeetRecTests */,
 				8FD7F3D72EC8F66500CFF5B0 /* MeetRecUITests */,
 				8FD7F3B92EC8F66300CFF5B0 /* Products */,
+				8FD7F3E72EC8F68400CFF5B0 /* ABOUT.md */,
 			);
 			sourceTree = "<group>";
 		};
@@ -212,6 +218,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8FD7F3E82EC8F68400CFF5B0 /* ABOUT.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
