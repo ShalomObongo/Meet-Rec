@@ -20,6 +20,9 @@ final class AudioService {
     private var inputNode: AVAudioInputNode?
     private var levelTimer: Timer?
     private var configChangeObserver: NSObjectProtocol?
+    
+    // Callback for audio buffer forwarding
+    var onAudioBuffer: ((AVAudioPCMBuffer) -> Void)?
 
     // Background queue for audio processing
     private let audioQueue = DispatchQueue(label: "com.meetrec.audio", qos: .userInitiated)
@@ -190,6 +193,9 @@ final class AudioService {
         // Update on main thread
         Task { @MainActor in
             self.micLevel = normalizedLevel
+            
+            // Forward audio buffer to transcription service
+            self.onAudioBuffer?(buffer)
         }
     }
 }

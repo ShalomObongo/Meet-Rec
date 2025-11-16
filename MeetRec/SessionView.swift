@@ -8,10 +8,17 @@
 import SwiftUI
 import CoreData
 
+enum EditorTab {
+    case memos
+    case transcript
+    case summary
+}
+
 struct SessionView: View {
     @Environment(\.managedObjectContext) private var viewContext
     var session: Session
     @State private var viewModel: SessionViewModel?
+    @State private var selectedTab: EditorTab = .memos
     
     var body: some View {
         VStack(spacing: 0) {
@@ -75,22 +82,60 @@ struct SessionView: View {
             .padding()
             .borderBottom()
             
-            // Memos Editor
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Memos")
-                    .font(.headline)
-                    .padding(.horizontal)
-                    .padding(.top)
+            // Tab selector
+            if let vm = viewModel {
+                Picker("Editor", selection: $selectedTab) {
+                    Text("Memos").tag(EditorTab.memos)
+                    Text("Transcript").tag(EditorTab.transcript)
+                    Text("Summary").tag(EditorTab.summary)
+                }
+                .pickerStyle(.segmented)
+                .padding()
                 
-                TextEditor(text: Binding(
-                    get: { session.rawMarkdown ?? "" },
-                    set: { session.rawMarkdown = $0 }
-                ))
-                .font(.body)
-                .padding()
-                .background(Color(nsColor: .controlBackgroundColor))
-                .cornerRadius(6)
-                .padding()
+                // Content based on selected tab
+                switch selectedTab {
+                case .memos:
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Memos")
+                            .font(.headline)
+                            .padding(.horizontal)
+                        
+                        TextEditor(text: Binding(
+                            get: { session.rawMarkdown ?? "" },
+                            set: { session.rawMarkdown = $0 }
+                        ))
+                        .font(.body)
+                        .padding()
+                        .background(Color(nsColor: .controlBackgroundColor))
+                        .cornerRadius(6)
+                        .padding()
+                    }
+                    
+                case .transcript:
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Transcript")
+                            .font(.headline)
+                            .padding(.horizontal)
+                            .padding(.top)
+                        
+                        TranscriptView(words: vm.transcriptionService.words)
+                            .background(Color(nsColor: .controlBackgroundColor))
+                            .cornerRadius(6)
+                            .padding()
+                    }
+                    
+                case .summary:
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Summary")
+                            .font(.headline)
+                            .padding(.horizontal)
+                            .padding(.top)
+                        
+                        Text("Summary generation coming soon...")
+                            .foregroundStyle(.secondary)
+                            .padding()
+                    }
+                }
             }
             
             Spacer()

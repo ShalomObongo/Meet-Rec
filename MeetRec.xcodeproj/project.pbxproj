@@ -413,6 +413,9 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "MeetRec needs access to your microphone to record audio during meetings and sessions.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "MeetRec uses speech recognition to transcribe your meeting audio in real-time, helping you capture accurate notes and summaries.";
+INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "MeetRec uses speech recognition to transcribe your meeting audio in real-time, helping you capture accurate notes and summaries.";
+INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "MeetRec uses speech recognition to transcribe your meeting audio in real-time, helping you capture accurate notes and summaries.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -447,6 +450,9 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "MeetRec needs access to your microphone to record audio during meetings and sessions.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "MeetRec uses speech recognition to transcribe your meeting audio in real-time, helping you capture accurate notes and summaries.";
+INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "MeetRec uses speech recognition to transcribe your meeting audio in real-time, helping you capture accurate notes and summaries.";
+INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "MeetRec uses speech recognition to transcribe your meeting audio in real-time, helping you capture accurate notes and summaries.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

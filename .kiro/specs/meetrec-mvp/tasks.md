@@ -96,7 +96,7 @@ For any task that involves SwiftUI UI work (views, controls, navigation, panels)
   - **Test**: Start recording, speak loudly/softly, verify level indicator responds; deny mic permission, verify error alert with Settings link
   - _Requirements: 1.1, 1.3, 1.5, 12.1_
 
-- [ ] 3. Live transcription with Apple Speech Framework
+- [x] 3. Live transcription with Apple Speech Framework
   - Add Info.plist key: NSSpeechRecognitionUsageDescription with clear usage description
   - Add Transcript and Word entities to Core Data model (id, text, startMs, endMs, channel, confidence)
   - Define relationships: Session → Transcript (one-to-many), Transcript → Word (one-to-many, ordered)
