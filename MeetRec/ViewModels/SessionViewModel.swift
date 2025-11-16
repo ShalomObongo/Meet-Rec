@@ -112,7 +112,7 @@ final class SessionViewModel {
         }
     }
     
-    private func handleError(_ error: Error) {
+    func handleError(_ error: Error) {
         if let audioError = error as? AudioServiceError {
             errorMessage = audioError.errorDescription
         } else if let transcriptionError = error as? TranscriptionError {

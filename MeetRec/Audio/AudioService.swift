@@ -14,12 +14,14 @@ import Combine
 final class AudioService {
     var isRecording: Bool = false
     var micLevel: Float = 0.0
+    var speakerLevel: Float = 0.0
     var audioSource: AudioSource = .micOnly
 
     private var audioEngine: AVAudioEngine?
     private var inputNode: AVAudioInputNode?
     private var levelTimer: Timer?
     private var configChangeObserver: NSObjectProtocol?
+    private var systemAudioService: SystemAudioService?
     
     // Callback for audio buffer forwarding
     var onAudioBuffer: ((AVAudioPCMBuffer) -> Void)?
@@ -29,6 +31,27 @@ final class AudioService {
 
     init() {
         setupConfigurationChangeObserver()
+        
+        // Initialize system audio service if available (requires macOS 13.0+)
+        if #available(macOS 13.0, *) {
+            systemAudioService = SystemAudioService()
+        }
+        
+        // Load saved audio source preference
+        loadAudioSourcePreference()
+    }
+    
+    private func loadAudioSourcePreference() {
+        if let savedSourceRawValue = UserDefaults.standard.string(forKey: "audioSource"),
+           let savedSource = AudioSource(rawValue: savedSourceRawValue) {
+            audioSource = savedSource
+            print("📱 Loaded audio source preference: \(savedSource.displayName)")
+        }
+    }
+    
+    private func saveAudioSourcePreference() {
+        UserDefaults.standard.set(audioSource.rawValue, forKey: "audioSource")
+        print("💾 Saved audio source preference: \(audioSource.displayName)")
     }
 
     deinit {
@@ -42,21 +65,51 @@ final class AudioService {
         // Update audio source
         self.audioSource = source
 
-        // Set up audio engine
-        do {
-            try await setupAudioEngine()
-        } catch {
-            print("❌ Failed to setup audio engine: \(error)")
-            throw error
+        // Start microphone if needed
+        if source == .micOnly || source == .micAndSystem {
+            // Set up audio engine
+            do {
+                try await setupAudioEngine()
+            } catch {
+                print("❌ Failed to setup audio engine: \(error)")
+                throw error
+            }
+
+            // Start the engine
+            do {
+                try audioEngine?.start()
+                print("✅ Audio engine started successfully")
+            } catch {
+                print("❌ Failed to start audio engine: \(error)")
+                throw AudioServiceError.engineStartFailed
+            }
         }
 
-        // Start the engine
-        do {
-            try audioEngine?.start()
-            print("✅ Audio engine started successfully")
-        } catch {
-            print("❌ Failed to start audio engine: \(error)")
-            throw AudioServiceError.engineStartFailed
+        // Start system audio if needed
+        if source == .systemOnly || source == .micAndSystem {
+            if #available(macOS 13.0, *) {
+                guard let systemAudioService = systemAudioService else {
+                    throw AudioServiceError.systemAudioNotAvailable
+                }
+                
+                // Set up audio buffer forwarding
+                systemAudioService.onAudioBuffer = { [weak self] buffer in
+                    guard let self = self else { return }
+                    Task { @MainActor in
+                        self.onAudioBuffer?(buffer)
+                    }
+                }
+                
+                do {
+                    try await systemAudioService.startCapture()
+                    print("✅ System audio capture started")
+                } catch {
+                    print("❌ Failed to start system audio: \(error)")
+                    throw error
+                }
+            } else {
+                throw AudioServiceError.systemAudioNotAvailable
+            }
         }
 
         isRecording = true
@@ -66,13 +119,25 @@ final class AudioService {
     func stopRecording() {
         print("🎤 Stopping recording")
         
-        audioEngine?.stop()
-        audioEngine?.inputNode.removeTap(onBus: 0)
+        // Stop microphone
+        if audioEngine != nil {
+            audioEngine?.stop()
+            if let inputNode = audioEngine?.inputNode, inputNode.numberOfInputs > 0 {
+                inputNode.removeTap(onBus: 0)
+            }
+        }
+        
         levelTimer?.invalidate()
         levelTimer = nil
         
+        // Stop system audio
+        if #available(macOS 13.0, *) {
+            systemAudioService?.stopCapture()
+        }
+        
         isRecording = false
         micLevel = 0.0
+        speakerLevel = 0.0
         
         print("🎤 Recording stopped")
     }
@@ -85,6 +150,7 @@ final class AudioService {
         }
         
         audioSource = source
+        saveAudioSourcePreference()
         
         if wasRecording {
             try await startRecording(source: source)
@@ -194,6 +260,13 @@ final class AudioService {
         Task { @MainActor in
             self.micLevel = normalizedLevel
             
+            // Update speaker level from system audio service
+            if #available(macOS 13.0, *) {
+                if let systemAudioService = self.systemAudioService {
+                    self.speakerLevel = systemAudioService.speakerLevel
+                }
+            }
+            
             // Forward audio buffer to transcription service
             self.onAudioBuffer?(buffer)
         }
@@ -206,6 +279,7 @@ enum AudioServiceError: LocalizedError {
     case microphonePermissionDenied
     case invalidAudioFormat
     case engineStartFailed
+    case systemAudioNotAvailable
     
     var errorDescription: String? {
         switch self {
@@ -215,6 +289,8 @@ enum AudioServiceError: LocalizedError {
             return "Failed to configure audio format."
         case .engineStartFailed:
             return "Failed to start audio engine."
+        case .systemAudioNotAvailable:
+            return "System audio capture requires macOS 13.0 or later."
         }
     }
     
@@ -222,6 +298,8 @@ enum AudioServiceError: LocalizedError {
         switch self {
         case .microphonePermissionDenied:
             return "Open System Settings > Privacy & Security > Microphone and enable access for MeetRec."
+        case .systemAudioNotAvailable:
+            return "Please upgrade to macOS 13.0 or later to use system audio capture."
         default:
             return nil
         }

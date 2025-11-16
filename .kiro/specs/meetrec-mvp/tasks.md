@@ -152,7 +152,7 @@ For any task that involves SwiftUI UI work (views, controls, navigation, panels)
   - **Test**: Generate with valid API key, verify streaming text appears; test with invalid key, verify retry button appears
   - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.6, 6.7, 8.6, 11.5_
 
-- [ ] 6. System audio capture with ScreenCaptureKit
+- [x] 6. System audio capture with ScreenCaptureKit
   - Add Info.plist key: NSScreenCaptureUsageDescription with clear usage description
   - Create SystemAudioService class for macOS 12.3+ with availability check
   - Implement startCapture method that requests screen recording permission

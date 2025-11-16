@@ -43,6 +43,22 @@ struct SessionView: View {
                     // Recording controls
                     if let vm = viewModel {
                         HStack(spacing: 12) {
+                            // Audio source picker
+                            AudioSourcePicker(
+                                selectedSource: Binding(
+                                    get: { vm.audioService.audioSource },
+                                    set: { _ in }
+                                ),
+                                isRecording: vm.audioService.isRecording,
+                                onSourceChange: { newSource in
+                                    do {
+                                        try await vm.audioService.setAudioSource(newSource)
+                                    } catch {
+                                        vm.handleError(error)
+                                    }
+                                }
+                            )
+                            
                             // Autonomy level picker
                             Menu {
                                 Picker("Autonomy Level", selection: Binding(
@@ -73,17 +89,34 @@ struct SessionView: View {
                             }
                             .help("AI Autonomy: \(vm.autonomyLevel.description)")
                             
-                            // Mic level indicator
+                            // Level indicators
                             if vm.audioService.isRecording {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "mic.fill")
-                                        .font(.caption)
-                                        .foregroundStyle(.red)
-                                    
-                                    ProgressView(value: Double(vm.audioService.micLevel), total: 1.0)
-                                        .progressViewStyle(.linear)
-                                        .frame(width: 60)
-                                        .tint(.red)
+                                // Mic level indicator (for micOnly and micAndSystem)
+                                if vm.audioService.audioSource == .micOnly || vm.audioService.audioSource == .micAndSystem {
+                                    HStack(spacing: 4) {
+                                        Image(systemName: "mic.fill")
+                                            .font(.caption)
+                                            .foregroundStyle(.red)
+                                        
+                                        ProgressView(value: Double(vm.audioService.micLevel), total: 1.0)
+                                            .progressViewStyle(.linear)
+                                            .frame(width: 60)
+                                            .tint(.red)
+                                    }
+                                }
+                                
+                                // Speaker level indicator (for systemOnly and micAndSystem)
+                                if vm.audioService.audioSource == .systemOnly || vm.audioService.audioSource == .micAndSystem {
+                                    HStack(spacing: 4) {
+                                        Image(systemName: "speaker.wave.2.fill")
+                                            .font(.caption)
+                                            .foregroundStyle(.blue)
+                                        
+                                        ProgressView(value: Double(vm.audioService.speakerLevel), total: 1.0)
+                                            .progressViewStyle(.linear)
+                                            .frame(width: 60)
+                                            .tint(.blue)
+                                    }
                                 }
                             }
                             
