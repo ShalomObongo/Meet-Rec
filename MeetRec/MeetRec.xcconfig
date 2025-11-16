@@ -1,0 +1,8 @@
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+// Microphone Usage Description
+INFOPLIST_KEY_NSMicrophoneUsageDescription = MeetRec needs access to your microphone to record audio during meetings and sessions.
+
+// Code Signing Entitlements
+CODE_SIGN_ENTITLEMENTS = MeetRec/MeetRec.entitlements

@@ -44,6 +44,23 @@ After completing each task, verify the deliverable works as expected:
 - Resize window to minimum size - verify UI doesn't break
 - Test in Dark Mode - verify colors and contrast are appropriate
 
+## Liquid Glass Guidelines
+
+For any task that involves SwiftUI UI work (views, controls, navigation, panels), the AI should also consider Apple’s Liquid Glass design:
+
+- Before implementing the UI, **use the Apple Developer Documentation MCP** to:
+  - Call `search_apple_docs` for Liquid Glass topics such as:
+    - "Adopting Liquid Glass"
+    - "Liquid Glass"
+    - "Applying Liquid Glass to custom views"
+    - `glassEffect(_:in:)`
+    - `Glass`
+    - `GlassEffectContainer`
+  - Then call `get_apple_doc_content` on the most relevant results to understand how to configure and apply Liquid Glass in SwiftUI.
+- When designing or refining SwiftUI views (shell, sidebars, headers, cards, buttons, settings panels, onboarding, timelines, etc.), use that documentation to decide **where Liquid Glass would enhance the experience**:
+  - For example, applying `glassEffect(_:in:)` to cards, headers, or action buttons, or using `Glass`/`GlassEffectContainer` for grouped elements.
+- Prefer subtle, purposeful use of Liquid Glass that matches Apple’s guidance, rather than applying it everywhere.
+
 - [x] 1. Basic app shell with session list
   - Create Xcode project with SwiftUI app template targeting macOS 12.0+
   - Configure app bundle identifier, version, and build settings
@@ -55,12 +72,12 @@ After completing each task, verify the deliverable works as expected:
   - Create simple SessionView that displays session title and empty memos editor
   - Implement "New Session" button that creates a session in Core Data
   - Add basic navigation: clicking a session in sidebar opens it in main content area
-  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` to find SwiftUI app structure docs (`App`, scenes, list/navigation containers like `NavigationSplitView`) and Core Data docs (`NSPersistentContainer`, \"Setting up a Core Data stack\"), then call `get_apple_doc_content` on the chosen results for concrete usage details (including using the managed object context in SwiftUI).
+  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` to find SwiftUI app structure docs (`App`, scenes, list/navigation containers like `NavigationSplitView`), Core Data docs (`NSPersistentContainer`, \"Setting up a Core Data stack\"), and Liquid Glass docs (for example \"Adopting Liquid Glass\", `glassEffect(_:in:)`, `Glass`), then call `get_apple_doc_content` on the chosen results to see concrete usage, how to wire the managed object context into SwiftUI views, and where a Liquid Glass background or container might enhance the shell UI.
   - **Deliverable**: App launches, shows session list, can create and view sessions
   - **Test**: Launch app, click "New Session", verify session appears in sidebar; click session, verify it opens in main area
   - _Requirements: 4.1, 4.2, 8.1, 8.2, 10.1_
 
-- [ ] 2. Microphone recording with visual feedback
+- [x] 2. Microphone recording with visual feedback
   - Add Info.plist key: NSMicrophoneUsageDescription with clear usage description
   - Configure sandbox entitlement: com.apple.security.device.microphone
   - Define AudioSource enum with cases: micAndSystem, micOnly, systemOnly
@@ -74,7 +91,7 @@ After completing each task, verify the deliverable works as expected:
   - Add "Start Recording" / "Stop Recording" button to SessionView
   - Display real-time mic level indicator (progress bar or waveform)
   - Update session startedAt/endedAt timestamps in Core Data when recording starts/stops
-  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for `AVAudioEngine`, `AVAudioInputNode`, and media capture authorization (for example `requestAccess(for:completionHandler:)` on `AVCaptureDevice`), then call `get_apple_doc_content` on those symbols for code-level guidance on setting up taps and handling mic permissions.
+  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for `AVAudioEngine`, `AVAudioInputNode`, and media capture authorization (for example `requestAccess(for:completionHandler:)` on `AVCaptureDevice`), and Liquid Glass docs (for example \"Adopting Liquid Glass\", `glassEffect(_:in:)`, `Glass`), then call `get_apple_doc_content` on those symbols and on SwiftUI controls like `Button` and `ProgressView` to guide both the audio setup, the recording/level UI, and where a subtle Liquid Glass treatment on the recording button or level indicator would make sense.
   - **Deliverable**: Click button to start/stop recording, see live mic level visualization
   - **Test**: Start recording, speak loudly/softly, verify level indicator responds; deny mic permission, verify error alert with Settings link
   - _Requirements: 1.1, 1.3, 1.5, 12.1_
@@ -95,7 +112,7 @@ After completing each task, verify the deliverable works as expected:
   - Create actor TranscriptPersistenceQueue for thread-safe Core Data batch saves (every 100 words)
   - Add TranscriptView to SessionView showing scrollable list of words with timestamps
   - Display words in real-time as they arrive from transcription service
-  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for Speech framework symbols like `SFSpeechRecognizer`, `SFSpeechAudioBufferRecognitionRequest`, `SFTranscription`, and the \"Asking Permission to Use Speech Recognition\" article, then call `get_apple_doc_content` on the most relevant results to verify configuration and Info.plist requirements.
+  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for Speech framework symbols like `SFSpeechRecognizer`, `SFSpeechAudioBufferRecognitionRequest`, `SFTranscription`, and the \"Asking Permission to Use Speech Recognition\" article, and Liquid Glass docs (for example \"Adopting Liquid Glass\", `glassEffect(_:in:)`, `Glass`), then call `get_apple_doc_content` on the most relevant results and on SwiftUI list/scrolling views (for example `List` or `ScrollView`) to inform both the transcription pipeline, the TranscriptView UI, and where Liquid Glass headers or highlight cards would improve readability.
   - **Deliverable**: Record audio and see live transcription appear word-by-word
   - **Test**: Speak "Hello world" clearly, verify both words appear within 2 seconds; check timestamps are sequential
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 8.2, 12.3_
@@ -110,7 +127,7 @@ After completing each task, verify the deliverable works as expected:
   - Display word count indicator below editor
   - Add editor tab switcher: Summary, Memos, Transcript (default to Memos)
   - Update SessionView to show selected editor tab content
-  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for `TextEditor` and Core Data+SwiftUI integration articles, then call `get_apple_doc_content` to learn recommended patterns for text editing and binding Core Data-backed state into SwiftUI views.
+  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for `TextEditor` and Core Data+SwiftUI integration articles, and Liquid Glass docs (for example \"Adopting Liquid Glass\", `glassEffect(_:in:)`, `Glass`), then call `get_apple_doc_content` on those results and any relevant SwiftUI toolbar/button docs to learn recommended patterns for text editing, markdown toolbars, binding Core Data–backed state into SwiftUI views, and applying Liquid Glass to memo/editor chrome where appropriate.
   - **Deliverable**: Type notes during recording, see auto-save and word count
   - **Test**: Type text, wait 2 seconds, force quit app, relaunch - verify text was saved; check word count updates live
   - _Requirements: 5.1, 5.2, 5.3, 5.4_
@@ -130,7 +147,7 @@ After completing each task, verify the deliverable works as expected:
   - Show skeleton loader during generation, display error with retry button on failure
   - Store final summary in Session.enhancedMarkdown when stream completes
   - Add autonomy level picker (Grounded / Creative) to session header
-  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for `URLSession` async/await examples and Keychain Services topics, then call `get_apple_doc_content` on those results to confirm streaming patterns and secure credential storage on macOS.
+  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for `URLSession` async/await examples and Keychain Services topics, and Liquid Glass docs (for example \"Adopting Liquid Glass\", `glassEffect(_:in:)`, `Glass`), then call `get_apple_doc_content` on those results and SwiftUI view docs for progress indicators and text streaming (for example `ProgressView`, `Text`) to confirm streaming patterns, secure credential storage, the SummaryView UI, and where a Liquid Glass card or button style would enhance the summary area.
   - **Deliverable**: Click "Generate Summary" to create AI summary from memos/transcript
   - **Test**: Generate with valid API key, verify streaming text appears; test with invalid key, verify retry button appears
   - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.6, 6.7, 8.6, 11.5_
@@ -152,7 +169,7 @@ After completing each task, verify the deliverable works as expected:
   - Display both mic and speaker level indicators when "Mic + System" is selected
   - Implement setAudioSource method that restarts recording with new source (within 2 seconds)
   - Persist selected audio source in UserDefaults
-  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for ScreenCaptureKit and key types like `SCShareableContent`, `SCContentFilter`, `SCStreamConfiguration`, `SCStreamOutput`, then call `get_apple_doc_content` on the ScreenCaptureKit overview and those symbols to understand setup and screen-recording permissions for macOS 12.3+.
+  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for ScreenCaptureKit and key types like `SCShareableContent`, `SCContentFilter`, `SCStreamConfiguration`, `SCStreamOutput`, and Liquid Glass docs (for example \"Adopting Liquid Glass\", `glassEffect(_:in:)`, `Glass`), then call `get_apple_doc_content` on the ScreenCaptureKit overview and those symbols, plus SwiftUI docs for `Menu` and custom controls, to inform both system audio capture and the audio source picker UI, including whether a Liquid Glass treatment on the picker or header makes the control clearer.
   - **Deliverable**: Select audio source, record system audio, see both level indicators
   - **Test**: Play music, select "System Only", verify speaker level moves; switch to "Mic + System" during recording, verify smooth transition
   - _Requirements: 1.1, 1.2, 1.4, 1.6, 12.2_
@@ -168,7 +185,7 @@ After completing each task, verify the deliverable works as expected:
   - Add breadcrumb navigation to session header showing folder path
   - Make breadcrumb items clickable to navigate to folder view
   - Update session list grouping to respect folder filtering
-  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for Core Data relationship modeling and hierarchical entities, then call `get_apple_doc_content` plus SwiftUI navigation/list docs (for example, `NavigationSplitView`) to derive patterns for folder trees and breadcrumbs.
+  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for Core Data relationship modeling and hierarchical entities, and Liquid Glass docs (for example \"Adopting Liquid Glass\", `glassEffect(_:in:)`, `Glass`), then call `get_apple_doc_content` on those results and SwiftUI navigation/list docs (for example, `NavigationSplitView`, `List`) to derive patterns for folder trees, sidebar hierarchies, breadcrumb UI, and tasteful Liquid Glass usage in the sidebar or breadcrumb bar.
   - **Deliverable**: Create folders, organize sessions, navigate folder hierarchy
   - **Test**: Create nested folders (Work > Meetings > Q1), drag session into Q1, verify breadcrumb shows full path
   - _Requirements: 4.3_
@@ -184,7 +201,7 @@ After completing each task, verify the deliverable works as expected:
   - Add tag filter chips to sidebar (show/hide sessions by tag)
   - Display search results count
   - Highlight search terms in results
-  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for `NSPredicate`, `NSFetchedResultsController`, and any Core Data search/filtering guides, then call `get_apple_doc_content` on those to see efficient querying patterns and how they integrate with SwiftUI.
+  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for `NSPredicate`, `NSFetchedResultsController`, any Core Data search/filtering guides, and Liquid Glass docs (for example \"Adopting Liquid Glass\", `glassEffect(_:in:)`, `Glass`), then call `get_apple_doc_content` on those and on SwiftUI search field patterns (for example `searchable`) to design the search bar, tag filters, and any Liquid Glass search chips or search bars.
   - **Deliverable**: Search sessions by text, filter by tags
   - **Test**: Create sessions with "standup" in title, search "standup", verify only matching sessions appear; add "urgent" tag, filter by tag
   - _Requirements: 4.4, 4.5_
@@ -199,7 +216,7 @@ After completing each task, verify the deliverable works as expected:
   - Implement copyToClipboard that copies markdown content to NSPasteboard
   - Show success notification after export completes
   - Show error alert if export fails
-  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for `PDFKit`, `NSSavePanel`, and `NSPasteboard`, then call `get_apple_doc_content` on the relevant classes to confirm correct export and clipboard handling on macOS.
+  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for `PDFKit`, `NSSavePanel`, `NSPasteboard`, and Liquid Glass docs (for example \"Adopting Liquid Glass\", `glassEffect(_:in:)`, `Glass`), then call `get_apple_doc_content` on the relevant classes and SwiftUI/AppKit integration docs (e.g. presenting panels from SwiftUI) to confirm correct export flows, clipboard handling on macOS, and if a Liquid Glass style makes sense on export buttons or menus.
   - **Deliverable**: Export session to Markdown/PDF file or copy to clipboard
   - **Test**: Export to PDF, open in Preview, verify formatting; copy to clipboard, paste in Notes, verify content matches
   - _Requirements: 9.1, 9.2, 9.4, 9.5_
@@ -219,7 +236,7 @@ After completing each task, verify the deliverable works as expected:
   - Create relationship between Session and CalendarEvent when linked
   - Display event metadata (title, time, participants) in session header when linked
   - Sync events every 15 minutes using Timer.publish
-  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for EventKit and `EKEventStore` plus \"Accessing the event store\"/`requestFullAccessToEvents`, then call `get_apple_doc_content` on those topics to confirm modern calendar access patterns and entitlements.
+  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for EventKit and `EKEventStore` plus \"Accessing the event store\"/`requestFullAccessToEvents`, and Liquid Glass docs (for example \"Adopting Liquid Glass\", `glassEffect(_:in:)`, `Glass`), then call `get_apple_doc_content` on those topics and SwiftUI list/picker docs to design the mixed timeline UI, event picker sheets, and potential Liquid Glass treatments for highlighted current events.
   - **Deliverable**: See calendar events in timeline, link sessions to events
   - **Test**: Create calendar event for today, verify it appears in sidebar; link session to event, verify event metadata displays in header
   - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 12.4_
@@ -240,7 +257,7 @@ After completing each task, verify the deliverable works as expected:
   - Add "Connect Google Calendar" and "Connect Outlook" buttons (OAuth flows)
   - Show list of synced calendars with enable/disable toggles
   - Open settings window from menu bar: MeetRec → Settings (Cmd+,)
-  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for SwiftUI/macOS settings patterns and Keychain Services, then call `get_apple_doc_content` on those results to guide the Settings window, secure credential storage, and high-level integration patterns (OAuth is typically documented by providers, not Apple).
+  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for SwiftUI/macOS settings patterns (e.g. SwiftUI settings windows, forms, toggles), Keychain Services, and Liquid Glass docs (for example \"Adopting Liquid Glass\", `glassEffect(_:in:)`, `Glass`), then call `get_apple_doc_content` on those results to guide the Settings window UI, secure credential storage, high-level integration patterns (OAuth specifics come from providers), and where Liquid Glass might make settings cards or headers clearer.
   - **Deliverable**: Configure transcription/AI providers, manage calendar connections
   - **Test**: Toggle settings, quit app, relaunch - verify settings persisted correctly
   - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5, 11.6, 11.7_
@@ -258,7 +275,7 @@ After completing each task, verify the deliverable works as expected:
   - Add provider switching logic to TranscriptionService
   - Update Settings AI tab to allow selecting between Apple Speech and Deepgram
   - Store selected provider in UserDefaults
-  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for `URLSessionWebSocketTask` and related networking topics, then call `get_apple_doc_content` on the best matches to follow Apple’s recommended WebSocket usage and error-handling patterns.
+  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for `URLSessionWebSocketTask` and related networking topics, and Liquid Glass docs (for example \"Adopting Liquid Glass\", `glassEffect(_:in:)`, `Glass`), then call `get_apple_doc_content` on the best matches and SwiftUI patterns for showing asynchronous state (e.g. status indicators) to follow Apple’s WebSocket usage, integrate status into the Settings UI, and decide if a Liquid Glass status pill or card is appropriate.
   - **Deliverable**: Switch to Deepgram for faster, more accurate transcription with speaker labels
   - **Test**: Record conversation with 2 people, verify speaker labels appear (Speaker 0, Speaker 1); test reconnection by disconnecting WiFi mid-recording
   - _Requirements: 3.1, 3.3, 3.4, 3.5_
@@ -275,7 +292,7 @@ After completing each task, verify the deliverable works as expected:
   - Display current time and total duration
   - Sync playback position with transcript: clicking a word seeks to its timestamp
   - Support keyboard shortcuts: Space (play/pause), ← → (seek ±5 seconds)
-  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for `AVAudioFile` and `AVAudioPlayer`, then call `get_apple_doc_content` to understand file-based recording/playback and how to coordinate those with UI on macOS.
+  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for `AVAudioFile` and `AVAudioPlayer`, and Liquid Glass docs (for example \"Adopting Liquid Glass\", `glassEffect(_:in:)`, `Glass`), then call `get_apple_doc_content` on those and on SwiftUI/AVFoundation integration docs (e.g. observing playback in SwiftUI) to implement file-based recording/playback, the timeline UI, and potential Liquid Glass styling for the transport controls.
   - **Deliverable**: Record audio to file, play back with timeline scrubber
   - **Test**: Record 30 seconds, click word at 15s mark, verify playback seeks to that position; press Space to pause/play
   - _Requirements: 1.7, 14.1, 14.2, 14.3, 14.4, 14.5_
@@ -291,7 +308,7 @@ After completing each task, verify the deliverable works as expected:
   - Add "Create Template" button to create custom templates
   - Implement template editor with section name/prompt inputs
   - Store custom templates in Core Data
-  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for Core Data modeling topics and SwiftUI forms/lists, then call `get_apple_doc_content` to see examples of editing structured data in a persistent model.
+  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for Core Data modeling topics, SwiftUI forms/lists, and Liquid Glass docs (for example \"Adopting Liquid Glass\", `glassEffect(_:in:)`, `Glass`), then call `get_apple_doc_content` on those to see examples of editing structured, persistent configuration data (templates) in SwiftUI and how Liquid Glass might enhance template rows or cards.
   - **Deliverable**: Generate summaries with structured sections using templates
   - **Test**: Select "1:1 Meeting" template, generate summary, verify sections appear (Key Points, Action Items, etc.)
   - _Requirements: 6.5, 13.1, 13.2, 13.3, 13.4, 13.5_
@@ -307,7 +324,7 @@ After completing each task, verify the deliverable works as expected:
   - Create optional calendar connection screen with "Connect" and "Skip" buttons
   - Create completion screen with "Start Session" button
   - Set "hasCompletedOnboarding" flag when user completes flow
-  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for macOS app onboarding patterns (Windows/sheets) and TCC/permission articles (for example \"Requesting Authorization for Media Capture on macOS\"), then call `get_apple_doc_content` to confirm recommended permission UI flows.
+  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for macOS app onboarding patterns (SwiftUI sheets/windows, `Alert`), TCC/permission articles (for example \"Requesting Authorization for Media Capture on macOS\"), and Liquid Glass docs (for example \"Adopting Liquid Glass\", `glassEffect(_:in:)`, `Glass`), then call `get_apple_doc_content` to confirm recommended permission UI flows, how to present them in SwiftUI, and where Liquid Glass backgrounds on welcome or permission cards are appropriate.
   - **Deliverable**: First-time users see guided setup for permissions and calendar
   - **Test**: Delete UserDefaults, relaunch app, verify onboarding appears; complete flow, relaunch, verify onboarding doesn't appear again
   - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5_
@@ -322,7 +339,7 @@ After completing each task, verify the deliverable works as expected:
   - Add keyboard shortcuts: Cmd+W (close tab), Cmd+T (new empty tab), Cmd+1-9 (switch to tab)
   - Show recording indicator (red dot) on tabs with active recording
   - Support drag-to-reorder tabs
-  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for SwiftUI navigation/tab patterns (e.g., `NavigationSplitView`, `TabView`), then call `get_apple_doc_content` on those to inform your tab system; look up AppKit tabbed windows only if you need deeper integration.
+  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for SwiftUI navigation/tab patterns (e.g., `NavigationSplitView`, `TabView`) and Liquid Glass docs (for example \"Adopting Liquid Glass\", `glassEffect(_:in:)`, `Glass`), then call `get_apple_doc_content` on those to inform your tab system and any Liquid Glass styling for the tab bar or active tab highlight, using AppKit tabbed windows docs only if you need deeper integration.
   - **Deliverable**: Open multiple sessions in tabs, switch between them
   - **Test**: Open 5 sessions, press Cmd+2 to switch to second tab, press Cmd+W to close it, verify correct tab closes
   - _Requirements: 10.2, 10.3, 10.4_
@@ -335,7 +352,7 @@ After completing each task, verify the deliverable works as expected:
   - Forward audio to transcription service only when voice is detected (within 500ms)
   - Pause transcription processing after 3 seconds of silence
   - Add visual indicator in UI showing voice activity status (green dot when active)
-  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for `AVAudioPCMBuffer`, Accelerate/vDSP signal-processing articles, and Combine (`PassthroughSubject`, `Publisher`), then call `get_apple_doc_content` to guide the VAD implementation.
+  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for `AVAudioPCMBuffer`, Accelerate/vDSP signal-processing articles, Combine (`PassthroughSubject`, `Publisher`), and Liquid Glass docs (for example \"Adopting Liquid Glass\", `glassEffect(_:in:)`, `Glass`), then call `get_apple_doc_content` on those and on SwiftUI view docs for simple indicators (e.g. a colored circle) to guide both the VAD implementation and its UI, including whether a Liquid Glass capsule around the activity dot makes sense.
   - **Deliverable**: Transcription only processes when speech is detected, saving CPU/battery
   - **Test**: Record with 5-second pauses between sentences, verify transcription pauses during silence
   - _Requirements: 2.1, 2.2, 2.3, 2.4_
@@ -349,7 +366,7 @@ After completing each task, verify the deliverable works as expected:
   - Provide "Resume" button that reopens session and continues recording
   - Provide "Finalize" button that sets status to "completed" without resuming
   - Persist session state incrementally during recording (auto-save every 10 seconds)
-  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for Core Data background saving and stack articles, then call `get_apple_doc_content` to confirm recommended patterns for avoiding data loss on macOS.
+  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for Core Data background saving and stack articles, SwiftUI alert patterns, and Liquid Glass docs (for example \"Adopting Liquid Glass\", `glassEffect(_:in:)`, `Glass`), then call `get_apple_doc_content` on those to confirm recommended crash-safe save patterns, how to present recovery prompts, and whether a Liquid Glass-styled recovery banner or sheet is appropriate.
   - **Deliverable**: Recover in-progress sessions after unexpected app termination
   - **Test**: Start recording, force quit app (Activity Monitor), relaunch, verify recovery alert appears with Resume/Finalize options
   - _Requirements: 8.4_
@@ -363,7 +380,7 @@ After completing each task, verify the deliverable works as expected:
   - Display speaker labels in transcript (e.g., "Speaker 1:", "John:")
   - Add merge/split functionality: select multiple words → "Merge" or "Split at cursor"
   - Publish edit events for UI updates
-  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for text editing in SwiftUI and AppKit (e.g., `TextEditor`, `NSTextView`), then call `get_apple_doc_content` plus Core Data update docs to inform how you persist frequent edits.
+  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for text editing in SwiftUI and AppKit (e.g., `TextEditor`, `NSTextView`), Core Data update docs, and Liquid Glass docs (for example \"Adopting Liquid Glass\", `glassEffect(_:in:)`, `Glass`), then call `get_apple_doc_content` to inform how you implement inline editing, context menus, persistent updates for the transcript, and any Liquid Glass accents on the editing toolbar or selection chrome.
   - **Deliverable**: Correct transcription mistakes, assign speakers to words
   - **Test**: Enable edit mode, change "hello" to "Hello", verify change persists; right-click word, assign speaker "John", verify label appears
   - _Requirements: 3.6_
@@ -376,7 +393,7 @@ After completing each task, verify the deliverable works as expected:
   - Write file to vault: `{vault_path}/{session_title}_{date}.md`
   - Support bi-directional links: `[[Session Title]]` format
   - Show success notification with "Open in Obsidian" button
-  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for `NSOpenPanel` and sandboxed file access (security-scoped bookmarks), then call `get_apple_doc_content` on those to implement safe Obsidian vault access.
+  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for `NSOpenPanel`, sandboxed file access (security-scoped bookmarks), and Liquid Glass docs (for example \"Adopting Liquid Glass\", `glassEffect(_:in:)`, `Glass`), then call `get_apple_doc_content` on those and SwiftUI/AppKit integration docs for presenting panels to implement safe Obsidian vault access from the SwiftUI export UI and consider Liquid Glass styling for export confirmation banners.
   - **Deliverable**: Export sessions directly to Obsidian vault
   - **Test**: Select vault, export session, open Obsidian, verify file appears with correct frontmatter and content
   - _Requirements: 9.3_
@@ -391,7 +408,7 @@ After completing each task, verify the deliverable works as expected:
   - Configure code signing for distribution
   - Set minimum macOS version to 12.0 in project settings
   - Test app on clean macOS installation
-  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for SwiftUI/AppKit keyboard shortcut APIs, asset catalogs (`.xcassets`), Hardened Runtime, and notarization docs, then call `get_apple_doc_content` to verify the correct configuration steps.
+  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for SwiftUI/AppKit keyboard shortcut APIs, asset catalogs (`.xcassets`), Hardened Runtime, notarization docs, and Liquid Glass docs (for example \"Adopting Liquid Glass\", `glassEffect(_:in:)`, `Glass`), then call `get_apple_doc_content` on those to verify the correct UI wiring, configuration steps, and whether global accents like a Liquid Glass search field or primary buttons fit the overall design.
   - **Deliverable**: Polished app ready for distribution
   - **Test**: Press each keyboard shortcut to verify it works; test on macOS 12.0 VM if possible
   - _Requirements: 10.4, 10.5, 12.1, 12.2_
@@ -403,7 +420,7 @@ After completing each task, verify the deliverable works as expected:
   - Call method when user toggles "Launch at login" in Settings General tab
   - Handle registration errors gracefully (show alert if registration fails)
   - Verify login item status on app launch and sync with Settings toggle
-  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for the ServiceManagement framework (`SMAppService`, `SMLoginItemSetEnabled`) and login items docs, then call `get_apple_doc_content` on those pages to follow the current login-item best practices.
+  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for the ServiceManagement framework (`SMAppService`, `SMLoginItemSetEnabled`) and login items docs, then call `get_apple_doc_content` on those pages to follow the current login-item best practices and surface any relevant UI guidance for login item status.
   - **Deliverable**: App launches automatically on login when enabled
   - **Test**: Enable toggle, log out, log back in - verify app launches automatically
   - _Requirements: 11.1_
@@ -417,7 +434,7 @@ After completing each task, verify the deliverable works as expected:
   - Respect Do Not Disturb / Focus mode using the appropriate macOS API (consult Focus and notification docs to choose the right approach)
   - Add "Ignored Apps" list in Settings to exclude specific apps from detection
   - Store detection preferences in UserDefaults
-  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for `NSWorkspace.frontmostApplication`, Focus-related docs (for example \"Focus\" in AppIntents), and EventKit calendar APIs, then call `get_apple_doc_content` on those results to design a meeting-detection heuristic that respects Focus/DND settings.
+  - **AI docs lookup**: Using the Apple Developer Documentation MCP, first call `search_apple_docs` for `NSWorkspace.frontmostApplication`, Focus-related docs (for example \"Focus\" in AppIntents), EventKit calendar APIs, and Liquid Glass docs (for example \"Adopting Liquid Glass\", `glassEffect(_:in:)`, `Glass`), then call `get_apple_doc_content` on those results and SwiftUI notification/banner patterns to design a meeting-detection heuristic that respects Focus/DND settings, presents suggestions in the UI, and optionally uses Liquid Glass styling for the suggestion banner.
   - **Deliverable**: App suggests starting recording when meeting is detected
   - **Test**: Open Zoom during calendar event time, verify notification appears; enable DND, verify no notification
   - _Requirements: 5.1, 5.2, 5.3, 5.4_

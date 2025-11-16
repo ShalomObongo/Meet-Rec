@@ -52,7 +52,7 @@ MeetRec is a **local-first AI notepad for meetings** that combines real-time tra
   - Independent level monitoring for each source
 - **Real-Time Voice Activity Detection (VAD)**:
   - Detects when speech is happening
-  - Silero-RS based detection
+  - Silero-RS based detection, with the option to use native AVAudio voice-processing speech activity events (for example `AVAudioVoiceProcessingSpeechActivityEvent` on macOS 14+) instead
   - Reduces unnecessary processing
 - **Audio Enhancement**:
   - **Acoustic Echo Cancellation (AEC)**: Removes echo from speakers
@@ -1823,7 +1823,11 @@ class AudioService: ObservableObject {
 
         // Request microphone permission if needed
         if source.includesMic {
-            let authorized = await AVCaptureDevice.requestAccess(for: .audio)
+            let authorized: Bool = await withCheckedContinuation { continuation in
+                AVCaptureDevice.requestAccess(for: .audio) { granted in
+                    continuation.resume(returning: granted)
+                }
+            }
             guard authorized else { throw AudioError.permissionDenied }
         }
 
@@ -2034,8 +2038,12 @@ class TranscriptionService: ObservableObject {
 
     func startTranscription() async throws {
         // Request authorization
-        let authorized = await SFSpeechRecognizer.requestAuthorization()
-        guard authorized == .authorized else { throw TranscriptionError.unauthorized }
+        let authorizationStatus: SFSpeechRecognizerAuthorizationStatus = await withCheckedContinuation { continuation in
+            SFSpeechRecognizer.requestAuthorization { status in
+                continuation.resume(returning: status)
+            }
+        }
+        guard authorizationStatus == .authorized else { throw TranscriptionError.unauthorized }
 
         recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
         guard let recognitionRequest = recognitionRequest else { return }
