@@ -18,15 +18,25 @@ final class SessionViewModel {
     var transcriptionService: TranscriptionService
     var errorMessage: String?
     var showError: Bool = false
+    var memosContent: String {
+        didSet {
+            // Update session and trigger auto-save
+            session.rawMarkdown = memosContent
+            scheduleAutoSave()
+        }
+    }
+    var selectedEditor: EditorTab = .memos
     
     private let viewContext: NSManagedObjectContext
     private var audioBufferCancellable: AnyCancellable?
+    private var autoSaveTask: Task<Void, Never>?
     
     init(session: Session, viewContext: NSManagedObjectContext) {
         self.session = session
         self.viewContext = viewContext
         self.audioService = AudioService()
         self.transcriptionService = TranscriptionService()
+        self.memosContent = session.rawMarkdown ?? ""
     }
     
     func startRecording() async {
@@ -104,5 +114,21 @@ final class SessionViewModel {
             errorMessage = error.localizedDescription
         }
         showError = true
+    }
+    
+    private func scheduleAutoSave() {
+        // Cancel any existing auto-save task
+        autoSaveTask?.cancel()
+        
+        // Schedule a new auto-save after 2 seconds
+        autoSaveTask = Task { @MainActor in
+            try? await Task.sleep(for: .seconds(2))
+            
+            // Check if task was cancelled
+            guard !Task.isCancelled else { return }
+            
+            // Save to Core Data
+            saveSession()
+        }
     }
 }

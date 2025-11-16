@@ -8,17 +8,16 @@
 import SwiftUI
 import CoreData
 
-enum EditorTab {
-    case memos
-    case transcript
-    case summary
+enum EditorTab: String, CaseIterable {
+    case memos = "Memos"
+    case transcript = "Transcript"
+    case summary = "Summary"
 }
 
 struct SessionView: View {
     @Environment(\.managedObjectContext) private var viewContext
     var session: Session
     @State private var viewModel: SessionViewModel?
-    @State private var selectedTab: EditorTab = .memos
     
     var body: some View {
         VStack(spacing: 0) {
@@ -82,60 +81,9 @@ struct SessionView: View {
             .padding()
             .borderBottom()
             
-            // Tab selector
+            // Tab selector and content
             if let vm = viewModel {
-                Picker("Editor", selection: $selectedTab) {
-                    Text("Memos").tag(EditorTab.memos)
-                    Text("Transcript").tag(EditorTab.transcript)
-                    Text("Summary").tag(EditorTab.summary)
-                }
-                .pickerStyle(.segmented)
-                .padding()
-                
-                // Content based on selected tab
-                switch selectedTab {
-                case .memos:
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Memos")
-                            .font(.headline)
-                            .padding(.horizontal)
-                        
-                        TextEditor(text: Binding(
-                            get: { session.rawMarkdown ?? "" },
-                            set: { session.rawMarkdown = $0 }
-                        ))
-                        .font(.body)
-                        .padding()
-                        .background(Color(nsColor: .controlBackgroundColor))
-                        .cornerRadius(6)
-                        .padding()
-                    }
-                    
-                case .transcript:
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Transcript")
-                            .font(.headline)
-                            .padding(.horizontal)
-                            .padding(.top)
-                        
-                        TranscriptView(words: vm.transcriptionService.words)
-                            .background(Color(nsColor: .controlBackgroundColor))
-                            .cornerRadius(6)
-                            .padding()
-                    }
-                    
-                case .summary:
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Summary")
-                            .font(.headline)
-                            .padding(.horizontal)
-                            .padding(.top)
-                        
-                        Text("Summary generation coming soon...")
-                            .foregroundStyle(.secondary)
-                            .padding()
-                    }
-                }
+                TabContentView(viewModel: vm)
             }
             
             Spacer()
@@ -180,6 +128,61 @@ struct SessionView: View {
     private func openSystemSettings() {
         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Microphone") {
             NSWorkspace.shared.open(url)
+        }
+    }
+}
+
+struct TabContentView: View {
+    @Bindable var viewModel: SessionViewModel
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            // Tab selector
+            Picker("Editor", selection: $viewModel.selectedEditor) {
+                ForEach(EditorTab.allCases, id: \.self) { tab in
+                    Text(tab.rawValue).tag(tab)
+                }
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal)
+            .padding(.top, 12)
+            .padding(.bottom, 8)
+            
+            // Content based on selected tab
+            Group {
+                switch viewModel.selectedEditor {
+                case .memos:
+                    MemosEditorView(text: $viewModel.memosContent)
+                        .padding(.horizontal)
+                        .padding(.bottom)
+                    
+                case .transcript:
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Transcript")
+                            .font(.headline)
+                            .padding(.horizontal)
+                        
+                        TranscriptView(words: viewModel.transcriptionService.words)
+                            .background(Color(nsColor: .controlBackgroundColor))
+                            .cornerRadius(6)
+                    }
+                    .padding(.horizontal)
+                    .padding(.bottom)
+                    
+                case .summary:
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Summary")
+                            .font(.headline)
+                            .padding(.horizontal)
+                        
+                        Text("Summary generation coming soon...")
+                            .foregroundStyle(.secondary)
+                            .padding()
+                    }
+                    .padding(.horizontal)
+                    .padding(.bottom)
+                }
+            }
         }
     }
 }

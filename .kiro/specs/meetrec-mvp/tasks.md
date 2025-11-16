@@ -117,7 +117,7 @@ For any task that involves SwiftUI UI work (views, controls, navigation, panels)
   - **Test**: Speak "Hello world" clearly, verify both words appear within 2 seconds; check timestamps are sequential
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 8.2, 12.3_
 
-- [ ] 4. Memos editor with auto-save
+- [x] 4. Memos editor with auto-save
   - Add rawMarkdown field to Session entity if not already present
   - Create MemosEditorView with TextEditor bound to session.rawMarkdown
   - Add markdown formatting toolbar with buttons: bold, italic, heading, list
