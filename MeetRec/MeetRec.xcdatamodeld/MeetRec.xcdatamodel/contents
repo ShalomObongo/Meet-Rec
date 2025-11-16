@@ -7,6 +7,7 @@
         <attribute name="startedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="endedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="rawMarkdown" optional="YES" attributeType="String"/>
+        <attribute name="enhancedMarkdown" optional="YES" attributeType="String"/>
         <relationship name="transcripts" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Transcript" inverseName="session" inverseEntity="Transcript"/>
     </entity>
     <entity name="Transcript" representedClassName="Transcript" syncable="YES" codeGenerationType="class">

@@ -36,6 +36,20 @@
         "find_related_wwdc_videos",
         "list_wwdc_years"
       ]
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp",
+        "--api-key",
+        "ctx7sk-4fc3145b-1303-4fb0-b061-8c0f985caecf"
+      ],
+      "disabled": false,
+      "autoApprove": [
+        "resolve-library-id",
+        "get-library-docs"
+      ]
     }
   }
 }

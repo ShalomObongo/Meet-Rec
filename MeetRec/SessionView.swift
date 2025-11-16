@@ -43,6 +43,36 @@ struct SessionView: View {
                     // Recording controls
                     if let vm = viewModel {
                         HStack(spacing: 12) {
+                            // Autonomy level picker
+                            Menu {
+                                Picker("Autonomy Level", selection: Binding(
+                                    get: { vm.autonomyLevel },
+                                    set: { vm.autonomyLevel = $0 }
+                                )) {
+                                    ForEach(AutonomyLevel.allCases, id: \.self) { level in
+                                        VStack(alignment: .leading) {
+                                            Text(level.rawValue)
+                                            Text(level.description)
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                        }
+                                        .tag(level)
+                                    }
+                                }
+                            } label: {
+                                HStack(spacing: 4) {
+                                    Image(systemName: vm.autonomyLevel == .grounded ? "doc.text" : "sparkles")
+                                        .font(.caption)
+                                    Text(vm.autonomyLevel.rawValue)
+                                        .font(.caption)
+                                }
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(Color.secondary.opacity(0.1))
+                                .cornerRadius(6)
+                            }
+                            .help("AI Autonomy: \(vm.autonomyLevel.description)")
+                            
                             // Mic level indicator
                             if vm.audioService.isRecording {
                                 HStack(spacing: 4) {
@@ -170,17 +200,7 @@ struct TabContentView: View {
                     .padding(.bottom)
                     
                 case .summary:
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Summary")
-                            .font(.headline)
-                            .padding(.horizontal)
-                        
-                        Text("Summary generation coming soon...")
-                            .foregroundStyle(.secondary)
-                            .padding()
-                    }
-                    .padding(.horizontal)
-                    .padding(.bottom)
+                    SummaryView(viewModel: viewModel)
                 }
             }
         }
